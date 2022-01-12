@@ -192,14 +192,15 @@ if __name__ == '__main__':
             '[--software <software hive>    ]\n'
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage)
-    parser.add_argument('--offroot',required=False ,help='Root Offline directory')
+    parser.add_argument('--windows',required=False ,help='Windows Offline directory')
     args, rem_args =  parser.parse_known_args()
-    if ( args.offroot != ''):
-        parser.add_argument('--cryptokeys', default = os.path.join(str(args.offroot), 'Windows/ServiceProfiles/LocalService/AppData/Roaming/Microsoft/Crypto/Keys/'))
-        parser.add_argument('--masterkey' , default = os.path.join(args.offroot, 'Windows/System32/Microsoft/Protect/S-1-5-18/User'))
-        parser.add_argument('--system' , default = os.path.join(args.offroot, 'Windows/System32/config/SYSTEM'))
-        parser.add_argument('--security' , default = os.path.join(args.offroot, 'Windows/System32/config/SECURITY'))
-        parser.add_argument('--ngc' , default = os.path.join(args.offroot, 'Windows/ServiceProfiles/LocalService/AppData/Local/Microsoft/Ngc/'))
+    if ( args.windows != ''):
+        parser.add_argument('--cryptokeys', default = os.path.join(str(args.windows), 'ServiceProfiles/LocalService/AppData/Roaming/Microsoft/Crypto/Keys/'))
+        parser.add_argument('--masterkey' , default = os.path.join(args.windows, 'System32/Microsoft/Protect/S-1-5-18/User'))
+        parser.add_argument('--system' , default = os.path.join(args.windows, 'System32/config/SYSTEM'))
+        parser.add_argument('--security' , default = os.path.join(args.windows, 'System32/config/SECURITY'))
+        parser.add_argument('--ngc' , default = os.path.join(args.windows, 'ServiceProfiles/LocalService/AppData/Local/Microsoft/Ngc/'))
+        parser.add_argument('--software' , default = os.path.join(args.windows, 'System32/config/SOFTWARE'))
     else:
         parser.add_argument('--cryptokeys', required=True, help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData')
         parser.add_argument('--masterkey' , required=True, help='The "\\Windows\\System32\\Microsoft\\Protect\\S-1-5-18\\User" directory')
@@ -210,17 +211,16 @@ if __name__ == '__main__':
         pin_group.add_argument('--pinguid', help='The PIN guid')
         pin_group.add_argument('--ngc', help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData\\Local\\'
                                              'Microsoft\\Ngc\" directory')
+        parser.add_argument('--software', help='The "\\Windows\\System32\\config\\SOFTWARE" hive"')
 
 
     parser.add_argument('--verbose', action="store_true", help='Verbose mode')
     
-    parser.add_argument('--software', help='The "\\Windows\\System32\\config\\SOFTWARE" hive"')
 
     args = parser.parse_args(rem_args, namespace=args)
 
     if not os.path.isdir(args.cryptokeys):
         sys.stderr.write('The cryptokeys directory doesn\'t exist.')
-        print(args.cryptokeys)
         exit(-1)
 
     if not os.path.isdir(args.masterkey):
