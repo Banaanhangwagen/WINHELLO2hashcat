@@ -187,15 +187,15 @@ def print_title(title: str):
 
 
 if __name__ == '__main__':
-    usage = 'WINHELLO2hashcat.py [--verbose] --cryptokeys <crypo keys directory> --masterkey <user masterkey ' \
-            'directory> --system <system hive> --security <security hive> [--pinguid <pinguid>|--ngc <ngc directory>]' \
-            '[--software <software hive>    ]\n' \
+    usage = 'WINHELLO2hashcat.py [--verbose]\n\t --cryptokeys <crypo keys directory>\n\t --masterkey <user masterkey ' \
+            'directory>\n\t --system <system hive>\n\t --security <security hive>\n\t --pinguid <pinguid> OR --ngc <ngc directory>\n\t' \
+            '[--software <software hive>]\n' \
             '[+] Or set the windows base directory with --windows\n'
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage)
-    parser.add_argument('--windows',required=False ,help='Windows Offline directory')
+    parser.add_argument('--windows', required=False, help='Windows Offline directory')
     args, rem_args =  parser.parse_known_args()
-    if ( args.windows is not None):
+    if (args.windows is not None):
         parser.add_argument('--cryptokeys', default = os.path.join(str(args.windows), 'ServiceProfiles','LocalService','AppData','Roaming','Microsoft','Crypto','Keys'))
         parser.add_argument('--masterkey' , default = os.path.join(args.windows, 'System32','Microsoft','Protect','S-1-5-18','User'))
         parser.add_argument('--system' , default = os.path.join(args.windows, 'System32','config','SYSTEM'))
