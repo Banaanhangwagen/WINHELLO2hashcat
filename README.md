@@ -29,6 +29,7 @@ optional arguments:
   --pinguid PINGUID     The PIN guid
   --ngc NGC             The "\Windows\ServiceProfiles\LocalService\AppData\Local\Microsoft\Ngc" directory
   --software SOFTWARE   The "\Windows\System32\config\SOFTWARE" hive"
+  --windows PATH        The windows offline directory. It will autodetect the system, security, masterkey, cryptokeys, ngc and software arguments
 ```
 - CRYPTOKEYS-folder, MASTERKEY-folder, SYSTEM and SECURITY hives are mandatory
 - NGC-folder or PIN_GUID is mandatory. Be aware that on a live (mounted) system, acces to this folder requires SYSTEM privilege.

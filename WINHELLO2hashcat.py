@@ -189,26 +189,36 @@ def print_title(title: str):
 if __name__ == '__main__':
     usage = 'WINHELLO2hashcat.py [--verbose] --cryptokeys <crypo keys directory> --masterkey <user masterkey ' \
             'directory> --system <system hive> --security <security hive> [--pinguid <pinguid>|--ngc <ngc directory>]' \
-            '[--software <software hive>    ]\n'
+            '[--software <software hive>    ]\n' \
+            '[+] Or set the windows base directory with --windows\n'
 
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, usage=usage)
+    parser.add_argument('--windows',required=False ,help='Windows Offline directory')
+    args, rem_args =  parser.parse_known_args()
+    if ( args.windows is not None):
+        parser.add_argument('--cryptokeys', default = os.path.join(str(args.windows), 'ServiceProfiles','LocalService','AppData','Roaming','Microsoft','Crypto','Keys'))
+        parser.add_argument('--masterkey' , default = os.path.join(args.windows, 'System32','Microsoft','Protect','S-1-5-18','User'))
+        parser.add_argument('--system' , default = os.path.join(args.windows, 'System32','config','SYSTEM'))
+        parser.add_argument('--security' , default = os.path.join(args.windows, 'System32','config','SECURITY'))
+        parser.add_argument('--ngc' , default = os.path.join(args.windows, 'ServiceProfiles','LocalService','AppData','Local','Microsoft','Ngc'))
+        parser.add_argument('--software' , default = os.path.join(args.windows, 'System32','config','SOFTWARE'))
+    else:
+        parser.add_argument('--cryptokeys', required=True, help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData')
+        parser.add_argument('--masterkey' , required=True, help='The "\\Windows\\System32\\Microsoft\\Protect\\S-1-5-18\\User" directory')
+        parser.add_argument('--system', required=True, help='The "\\Windows\\System32\\config\\SYSTEM" hive"')
+        parser.add_argument('--security', required=True, help='The "\\Windows\\System32\\config\\SECURITY" hive"\\Roaming\\''Microsoft\\Crypto\\Keys" directory')
+        pin_group = parser.add_mutually_exclusive_group()
+        pin_group.required = True
+        pin_group.add_argument('--pinguid', help='The PIN guid')
+        pin_group.add_argument('--ngc', help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData\\Local\\'
+                                             'Microsoft\\Ngc\" directory')
+        parser.add_argument('--software', help='The "\\Windows\\System32\\config\\SOFTWARE" hive"')
+
+
     parser.add_argument('--verbose', action="store_true", help='Verbose mode')
-    parser.add_argument('--cryptokeys', required=True, help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData'
-                                                            '\\Roaming\\''Microsoft\\Crypto\\Keys" directory')
-    parser.add_argument('--masterkey', required=True, help='The "\\Windows\\System32\\Microsoft\\Protect\\S-1-5-18'
-                                                           '\\User" directory')
-    parser.add_argument('--system', required=True, help='The "\\Windows\\System32\\config\\SYSTEM" hive"')
-    parser.add_argument('--security', required=True, help='The "\\Windows\\System32\\config\\SECURITY" hive"')
+    
 
-    pin_group = parser.add_mutually_exclusive_group()
-    pin_group.required = True
-    pin_group.add_argument('--pinguid', help='The PIN guid')
-    pin_group.add_argument('--ngc', help='The "\\Windows\\ServiceProfiles\\LocalService\\AppData\\Local\\'
-                                         'Microsoft\\Ngc\" directory')
-
-    parser.add_argument('--software', help='The "\\Windows\\System32\\config\\SOFTWARE" hive"')
-
-    args = parser.parse_args()
+    args = parser.parse_args(rem_args, namespace=args)
 
     if not os.path.isdir(args.cryptokeys):
         sys.stderr.write('The cryptokeys directory doesn\'t exist.')
